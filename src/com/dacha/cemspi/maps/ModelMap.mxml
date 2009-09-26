@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.dacha.cemspi.business.*;
+			import com.dacha.cemspi.view.*;
+			import com.dacha.cemspi.*;
+		]]>
+	</mx:Script>
+
+	<Injectors target="{RecordCaller}">
+		<PropertyInjector targetKey="_deployments" source="{CallerManager}" sourceKey="deploymentList" />
+		<PropertyInjector targetKey="_priorities" source="{CallerManager}" sourceKey="priorityList" />
+		<PropertyInjector targetKey="_inboxes" source="{CallerManager}" sourceKey="inboxList" />
+		<PropertyInjector targetKey="_caller" source="{CallerManager}" sourceKey="caller" />
+		<PropertyInjector targetKey="_cities" source="{CallerManager}" sourceKey="citiesList" />
+			
+	</Injectors>
+
+	<Injectors target="{Inbox}">
+		<PropertyInjector targetKey="_callers" source="{InboxManager}" sourceKey="callerList" />	
+	</Injectors>
+
+	<Injectors target="{Bootstrap}">
+		<PropertyInjector targetKey="_session" source="{SessionManager}" sourceKey="session" />
+		<PropertyInjector targetKey="currentState" source="{SessionManager}" sourceKey="state" />
+				
+	</Injectors>
+	
+	<Injectors target="{LoginPanel}">
+		<PropertyInjector targetKey="_sessionError" source="{SessionManager}" sourceKey="sessionError" />	
+	</Injectors>
+
+</EventMap>

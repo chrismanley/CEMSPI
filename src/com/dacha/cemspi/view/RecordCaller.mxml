@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox label="Record Caller" backgroundAlpha="0.5" xmlns:mate="http://mate.asfusion.com/" xmlns:hc="com.hillelcoren.components.*" xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="creationCompleteHandler();"  preinitialize="preinitHandler();">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import com.dacha.cemspi.model.*;
+			import com.dacha.cemspi.events.*;
+			import mx.binding.utils.BindingUtils;     
+			
+			[Bindable]
+			public var _appReady:Boolean = false;
+			
+			[Bindable]
+			public var _deployments:ArrayCollection = null;
+			
+			[Bindable]
+			public var _priorities:ArrayCollection = null;
+			
+			[Bindable]
+			public var _inboxes:ArrayCollection = null;
+			
+			[Bindable]
+			public var _cities:ArrayCollection = null;
+			
+			[Bindable]
+			public var _caller:Caller;
+
+			[Bindable]
+			public var formIsValid:Boolean=true;
+
+			[Bindable]
+			public var formIsEmpty:Boolean=true;
+
+			private var focussedFormControl:DisplayObject;
+
+			public function SetCaller(caller:Caller):void
+			{
+				_caller = caller;
+			}
+			
+			public function GetCaller():Caller
+			{
+				return _caller;
+			}
+
+			private function preinitHandler():void
+			{
+				//mx.core.Application.application.enabled = false;
+				//BindingUtils.bindProperty(mx.core.Application.application, "enabled", this, "_appReady");
+				
+				//.enabled = _appReady;
+			}
+			
+			public function setAppReady():void
+			{
+				mx.core.Application.application.enabled = true;
+			}
+
+			private function creationCompleteHandler():void
+			{
+				resetFocus();
+			}
+
+			private function resetFocus():void
+			{
+				focusManager.setFocus(txtFirstName);
+			}
+
+			private function enableOrDisableLookup():void
+			{
+				btnLookup.enabled=(txtFirstName.text != "" && txtLastName.text != "" && txtPrimaryPhone.text != "")
+			}
+
+			private function responseAvailableHandler(event:MouseEvent):void
+			{
+				txtResponse.enabled=true;
+				cmbPriority.enabled=false;
+				cmbLocation.enabled=false;
+				cmbAssignTo.enabled=false;
+			}
+
+			private function responseRequiredHandler(event:MouseEvent):void
+			{
+				txtResponse.enabled=false;
+				cmbPriority.enabled=true;
+				cmbLocation.enabled=true;
+				cmbAssignTo.enabled=true;
+			}
+			
+			public function saveCaller() : void 
+			{
+				var event:CallerEvent = new CallerEvent(CallerEvent.SAVE);
+				
+				event.caller = createTempCaller();
+					
+				this.dispatchEvent(event);
+			}
+			
+			public function lookupCaller() : void
+			{
+				var event:CallerEvent = new CallerEvent(CallerEvent.SEARCH);
+				
+				event.caller = createTempCaller();
+					
+				this.dispatchEvent(event);
+			}
+			
+			private function createTempCaller() : Caller
+			{
+			 	var tempCaller:Caller = new Caller();
+				tempCaller.firstname = txtFirstName.text;
+				tempCaller.lastname = txtLastName.text;
+				tempCaller.primaryphone = txtPrimaryPhone.text;
+				tempCaller.recordedby = "Chris";
+				tempCaller.secondaryphone = txtSecondaryPhone.text;
+				tempCaller.streetnumber = txtStreetNumber.text;
+				tempCaller.streetname = txtStreetName.text;
+				tempCaller.streettype = txtStreetType.text;
+				tempCaller.city  = txtCityTown.text;
+				tempCaller.postalcode  = txtPostalCode.text;
+				tempCaller.ruralurban  = grpLocation.selectedValue.toString();
+				tempCaller.inquiry  = txtInquiry.text;
+				tempCaller.response = txtResponse.text;
+				tempCaller.responseavailable = grpResponse.selectedValue.toString();
+				tempCaller.location  = cmbLocation.text;
+				tempCaller.assignedto = cmbAssignTo.text;
+				tempCaller.priority = cmbPriority.selectedItem.level;
+				return tempCaller;
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%" paddingLeft="10" paddingRight="10" cornerRadius="0">
+		<mx:Form width="49%" borderStyle="solid" id="formLeft">
+			<mx:Label text="Name / Contact" fontSize="18" fontWeight="bold" color="#0B333C"/>
+			<mx:FormItem label="First Name:" required="true">
+				<mx:TextInput id="txtFirstName" width="226" text="{_caller.firstname}" focusOut="enableOrDisableLookup()"/>
+			</mx:FormItem>
+			<mx:FormItem label="Last Name:" required="true">
+				<mx:TextInput id="txtLastName" width="226" text="{_caller.lastname}" focusOut="enableOrDisableLookup()"/>
+			</mx:FormItem>
+			<mx:FormItem label="Primary Phone:" required="true">
+				<mx:TextInput id="txtPrimaryPhone" width="226" text="{_caller.primaryphone}"  change="enableOrDisableLookup()" focusOut="enableOrDisableLookup()"/>
+			</mx:FormItem>
+			<mx:Canvas width="346" height="29">
+				<mx:Button label="Lookup" id="btnLookup" click="lookupCaller();" textAlign="center" labelPlacement="right" x="276" y="3"  />
+			</mx:Canvas>
+			<mx:FormItem label="Secondary Phone:">
+				<mx:TextInput id="txtSecondaryPhone" width="226" text="{_caller.secondaryphone}"/>
+			</mx:FormItem>
+			<mx:Label text="Address" fontSize="18" fontWeight="bold" color="#0B333C"/>
+			<mx:FormItem label="Street Number">
+				<mx:TextInput id="txtStreetNumber" width="226" text="{_caller.streetnumber}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Street Name">
+				<mx:TextInput id="txtStreetName" width="226" text="{_caller.streetname}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Street Type">
+				<mx:TextInput id="txtStreetType" width="226" text="{_caller.streettype}"/>
+			</mx:FormItem>
+			<mx:FormItem label="City / Town">
+				<hc:AdvancedAutoComplete id="txtCityTown" width="226" text="{_caller.city}" dataProvider="{ _cities }"  labelField="city"  enableClearIcon="true" />
+			</mx:FormItem>
+			<mx:FormItem label="Postal Code">
+				<mx:TextInput id="txtPostalCode" text="{_caller.postalcode}" width="226"/>
+			</mx:FormItem>
+			<mx:RadioButtonGroup id="grpLocation" selectedValue="{_caller.ruralurban}"/>
+			<mx:RadioButton groupName="grpLocation" label="Rural" textAlign="left" selected="true" id="rbtRural" value="rural"/>
+			<mx:RadioButton groupName="grpLocation" label="Urban" id="rbtUrban" value="urban"/>
+		</mx:Form>
+		<mx:Form width="49%" borderStyle="solid">
+			<mx:Label text="Inquiry" fontSize="18" fontWeight="bold" color="#0B333C"/>
+			<mx:TextArea height="105" width="347" text="{_caller.inquiry}" id="txtInquiry"/>
+			<mx:RadioButtonGroup id="grpResponse"  selectedValue="{_caller.responseavailable}"/>
+			<mx:RadioButton label="Response Required" groupName="grpResponse" selected="true" click="responseRequiredHandler(event);" id="rbtResponseRequired" value="required"/>
+			<mx:RadioButton label="Response Available" groupName="grpResponse" click="responseAvailableHandler(event);" id="rbtResponseAvailable" value="available"/>
+			<mx:TextArea width="347" height="96" enabled="false" text="{_caller.response}" id="txtResponse"/>
+			<mx:Label text="Assignment" fontSize="18" fontWeight="bold" color="#0B333C"/>
+			<mx:FormItem label="Location:">
+				<mx:ComboBox width="265" selectedItem="{_caller.location}" id="cmbLocation" labelField="name" dataProvider="{_deployments}" />
+			</mx:FormItem>
+			<mx:FormItem label="Assign To:">
+				<mx:ComboBox width="265" selectedItem="{_caller.assignedto}" id="cmbAssignTo" labelField="name"  dataProvider="{_inboxes}">
+				</mx:ComboBox>
+			</mx:FormItem>
+			<mx:FormItem label="Priority:">
+				<mx:ComboBox width="265" id="cmbPriority" labelField="priority_name" selectedItem="{_caller.priority}" dataProvider="{_priorities}">
+				</mx:ComboBox>
+			</mx:FormItem>
+		</mx:Form>
+	</mx:HBox>
+	<mx:Canvas width="100%">
+		<mx:Button label="Save" y="0" width="64" height="57" enabled="{formIsValid}" x="632" click="saveCaller();"/>
+		<mx:Button label="Reset" width="64" height="57" enabled="{!formIsEmpty}" x="704" y="0"/>
+	</mx:Canvas>
+</mx:VBox>

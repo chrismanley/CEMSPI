@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" x="21" y="10" width="574" height="341" keyDown="onKeyDown(event);" layout="absolute" title="CEMSPI Login" horizontalAlign="center" verticalAlign="middle" visible="true" fontSize="15" backgroundAlpha="0.67" >
+
+<mx:Script>
+<![CDATA[
+			import com.dacha.cemspi.model.User;
+			import com.dacha.cemspi.events.LoginEvent;
+
+			[Bindable]
+			public var _sessionError:String = "";
+			
+			
+ 			private function onLoginClicked():void {
+  				
+  				var event:LoginEvent = new LoginEvent(LoginEvent.LOGIN);
+				
+				event.user = createTempUser();
+					
+				this.dispatchEvent(event);
+            }
+            
+            private function onKeyDown(event:KeyboardEvent):void
+            {
+                if(event.charCode == 13 && loginValid())
+                {
+             		onLoginClicked();
+                }
+            }
+            
+            private function loginValid():Boolean {
+            	btnLogin.enabled =  txtLogin.text.length > 0 && txtName.text.length > 0 && txtPassword.text.length > 0;
+            	return btnLogin.enabled;
+            }
+            
+            private function createTempUser() : User
+			{
+			 	var tempUser:User = new User();
+				tempUser.username = txtLogin.text;
+				tempUser.fullname = txtName.text;
+				tempUser.password = txtPassword.text;
+				return tempUser;
+			}
+            
+        ]]>
+</mx:Script>
+
+		<mx:TextInput x="213" y="59" id="txtLogin" width="314"  change="loginValid()"/>
+		<mx:TextInput x="213" y="111" id="txtName" width="314" change="loginValid()" />
+		<mx:TextInput x="213" y="158" displayAsPassword="true" id="txtPassword" width="314" change="loginValid()"/>
+		<mx:Label x="24" y="50" text="User Name:" id="lblUser" fontSize="20" fontFamily="Verdana" fontStyle="normal" fontWeight="bold"/>
+		<mx:Label x="24" y="102" text="Full Name:" fontSize="20" fontWeight="bold"/>
+		<mx:Label x="24" y="149" text="Password:" fontSize="20" fontWeight="bold"/>
+		<mx:Button x="448" y="238" label="Login" id="btnLogin" width="96" height="53" fontSize="20" click="onLoginClicked()" enabled="false"/>
+		<mx:Text x="10" y="220" text="{_sessionError}" width="420" height="65" color="#931F0F" id="txtError"/>
+		
+</mx:Panel>

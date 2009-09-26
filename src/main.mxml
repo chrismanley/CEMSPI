@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:view="com.dacha.cemspi.view.*"
+    xmlns:maps="com.dacha.cemspi.maps.*"
+    width="100%" height="100%">
+
+	
+	<view:Bootstrap id="bootstrapView" currentState="LoggedIn" />
+	<maps:MainEventMap />
+	<maps:ModelMap />
+
+	
+
+</mx:Application>

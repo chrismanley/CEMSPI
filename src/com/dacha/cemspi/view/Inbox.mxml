@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox label="Inbox" backgroundAlpha="0.5" xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	
+	<mx:Script>
+		<![CDATA[
+	
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			public var _callers:ArrayCollection = null;
+			
+			
+			
+	
+	private function onGetInbox(e:Object):void
+	{
+		gridInbox.dataProvider = new ArrayCollection(e.result);
+	}
+	
+	private function onGetInboxWithSearch(e:Object):void
+	{
+		gridInbox.dataProvider = new ArrayCollection(e.result);
+	}
+	
+	private function onError(e:Object):void
+	{
+		
+	}
+	
+	private function onFilterKeyDown(e:KeyboardEvent):void
+	{
+		if (e.charCode == 13) {
+		}
+	}
+	
+	private function clearSearch():void
+	{
+		txtFilter.text = "";
+		btnClearSearch.visible = false;
+		refreshGrid();
+	}
+	
+	private function refreshGrid():void
+	{
+		
+	}
+	
+	]]>	
+	</mx:Script>
+		
+	<mx:ControlBar width="100%" height="45">
+		<mx:Image source="com/dacha/cemspi/view/assets/icons/png/16x16/search.png"/>
+		<mx:TextInput id="txtFilter" keyDown="onFilterKeyDown(event);"/>
+		<mx:Image id="btnClearSearch" source="com/dacha/cemspi/view/assets/icons/png/16x16/delete.png" click="clearSearch();" visible="{txtFilter.text != ''}" />
+		<mx:VRule width="5" height="22"/>
+		<mx:Image source="com/dacha/cemspi/view/assets/icons/png/16x16/refresh.png" click="refreshGrid();"/>
+
+	
+	</mx:ControlBar>
+
+	<mx:DataGrid id="gridInbox" width="100%" variableRowHeight="true" height="500"  dataProvider="{_callers}">
+		<mx:columns>
+			<mx:DataGridColumn dataField="id" visible="false"/>
+			<mx:DataGridColumn headerText="Priority" dataField="priority"/>
+			<mx:DataGridColumn headerText="Name" dataField="lastname"/>
+			<mx:DataGridColumn headerText="Inquiry" dataField="inquiry" wordWrap="true" />
+			<mx:DataGridColumn headerText="Response" dataField="response" wordWrap="true" />
+			<mx:DataGridColumn headerText="Recorded" dataField="recorded_date"/>
+			<mx:DataGridColumn headerText="Closed" dataField="closed_date"/>
+			<mx:DataGridColumn headerText="Closed By" dataField="closed_by"/>
+		</mx:columns>
+	</mx:DataGrid>
+
+</mx:VBox>

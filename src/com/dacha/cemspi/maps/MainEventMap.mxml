@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.*;
+			import com.dacha.cemspi.events.*;
+			import com.dacha.cemspi.business.*;
+			import com.dacha.cemspi.model.*;
+			import com.dacha.cemspi.view.*;
+			import mx.rpc.remoting.mxml.RemoteObject;
+			
+		]]>
+	</mx:Script>
+	
+	<Debugger level="{Debugger.ALL}" />
+	
+	<mx:RemoteObject id="cemspiService" endpoint="http://cemspi.com/cemsnew/"  source="CallRecording" destination="zend" />
+	<mx:RemoteObject id="cemspiInbox" endpoint="http://cemspi.com/cemsnew/"  source="Inbox" destination="zend" />
+	<mx:RemoteObject id="cemspiLogin" endpoint="http://cemspi.com/cemsnew/"  source="LoginManager" destination="zend" />
+	<!-- FlexEvent.APPLICATION_COMPLETE ___________________________________________________________ -->
+	
+	<EventHandlers type="{FlexEvent.VALID}" debug="true" >
+		
+		<MethodInvoker generator="{CallerManager}" method="resetCaller" />
+		
+		<RemoteObjectInvoker instance="{cemspiService}" method="getStartupData" >
+			<resultHandlers>
+				<MethodInvoker generator="{CallerManager}" method="loadStartupData" arguments="{resultObject}" />
+				<EventAnnouncer	generator="{CallerEvent}" type="{CallerEvent.STARTUP}" />
+			</resultHandlers>
+		</RemoteObjectInvoker>
+		
+		<RemoteObjectInvoker instance="{cemspiInbox}" method="getInbox">
+			<resultHandlers>
+				<MethodInvoker generator="{InboxManager}" method="loadCallerList" arguments="{resultObject}" />
+			</resultHandlers>
+		</RemoteObjectInvoker>
+				
+	</EventHandlers>
+	
+	<EventHandlers type="{LoginEvent.LOGIN}" debug="true">
+		<RemoteObjectInvoker instance="{cemspiLogin}" debug="true" showBusyCursor="true" method="verifyUser" arguments="{[event.user.username, event.user.fullname, event.user.password]}">
+			<resultHandlers>
+				<MethodInvoker generator="{SessionManager}" method="loginAttempt" arguments="{resultObject}" />
+			</resultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{CallerEvent.STARTUP}" debug="true" >
+		<MethodInvoker generator="{RecordCaller}" method="setAppReady" />
+	</EventHandlers>
+	
+	<EventHandlers type="{CallerEvent.SEARCH}">
+		<RemoteObjectInvoker instance="{cemspiService}" showBusyCursor="true" method="getPreviousIdenticalRecords" arguments="{[event.caller.firstname, event.caller.lastname, event.caller.primaryphone]}">
+			<resultHandlers>
+				<MethodInvoker generator="{CallerManager}" method="loadCallerFromSearch" arguments="{resultObject}" />
+			</resultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+	
+	<EventHandlers type="{CallerEvent.SAVE}" debug="true">
+		
+		<RemoteObjectInvoker instance="{cemspiService}" showBusyCursor="true" method="recordCaller" arguments="{[event.caller.recordedby, event.caller.firstname, event.caller.lastname, event.caller.primaryphone, event.caller.secondaryphone, event.caller.streetnumber, event.caller.streetname, event.caller.streettype, event.caller.city, event.caller.postalcode, event.caller.ruralurban, event.caller.inquiry, event.caller.response, event.caller.responseavailable, event.caller.location, event.caller.assignedto, event.caller.priority ]}">
+			<resultHandlers>
+				<MethodInvoker generator="{CallerManager}" method="callerSaveFinished" arguments="{resultObject}" />
+			</resultHandlers>
+		</RemoteObjectInvoker>
+		
+		
+	</EventHandlers>
+	
+	
+</EventMap>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:renderers="com.dacha.cemspi.view.renderers.*" title="Bulletin Board" horizontalScrollPolicy="off" initialize="createData()">
+  
+       
+    <mx:Script>
+        <![CDATA[
+        	import com.dacha.cemspi.view.renderers.BulletinBoardItemRenderer;
+            import mx.collections.ArrayCollection;
+            import com.dacha.cemspi.model.*;
+
+            import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+
+			
+
+            private function init():void {
+               
+            }
+
+            
+
+			private function launchAddDialog():void
+			{
+				var addDialog:BulletinBoardAdd = new BulletinBoardAdd(); 
+				PopUpManager.addPopUp(addDialog, this.parent, true);
+                PopUpManager.centerPopUp(addDialog);
+			}
+            
+            private function createData():BulletinBoardItem
+            {
+            	var bb:BulletinBoardItem = new BulletinBoardItem();
+            	bb.id = "test";
+            	bb.title = "title";
+            	bb.subtitle = "subtitle";
+            	bb.content = "is a recent graduate of Chapman University in Orange with a BA in Theatre Arts, and an AA from Marymount College in Rancho Palos Verdes. While at school, she appeared as Julia in Lend Me a Tenor, Ethel in Moon Over Buffalo, Lala in The Last Night at Ballyhoo, Kate in Ladies in Waiting, and the Nurse in Romeo and Juliet. She has also appeared in Grease, Brigadoon, Damn Yankees, and Arsenic and Old Lace. Robin was twice awarded an Irene Ryan nomination to the Kennedy Center American College Theatre Festival for her comedy performances. Theatre and film have been Robin’s passion for as long as she can remember. She is thrilled to have been chosen to play Clara Beane in The Guild.";
+            
+            	var bb2:BulletinBoardItem = new BulletinBoardItem();
+            	bb2.id = "test";
+            	bb2.title = "title";
+            	bb2.subtitle = "subtitle";
+            	bb2.content = "small content";
+            		
+            	
+            	
+            	var render:BulletinBoardItemRenderer = new BulletinBoardItemRenderer();
+            	var render2:BulletinBoardItemRenderer = new BulletinBoardItemRenderer();
+            	var render3:BulletinBoardItemRenderer = new BulletinBoardItemRenderer();
+            	var render4:BulletinBoardItemRenderer = new BulletinBoardItemRenderer();
+            	
+            	render.data = bb;
+            	render.percentWidth = 100;
+            	//render.percentHeight = 100;
+            	render2.data = bb2;
+            	render2.percentWidth = 100;
+            	render3.data = bb;
+            	render3.percentWidth = 100;
+            	
+            	render4.data = bb;
+            	render4.percentWidth = 100;
+            	
+            	stackPanel.addChild(render);
+            	stackPanel.addChild(render2);
+            	stackPanel.addChild(render3);
+            	stackPanel.addChild(render4);
+            	
+            	return bb;
+            }
+            
+            
+            //private var dp:ArrayCollection = new ArrayCollection([createData(),createData(),createData(),createData(),createData(),createData(),createData()])
+        ]]>
+    </mx:Script>
+    <mx:ApplicationControlBar dock="true" width="100%" cornerRadius="0">
+        <mx:ComboBox width="118" toolTip="Location"></mx:ComboBox>
+        <mx:VRule width="2" height="30"/>
+        <mx:Image width="16" height="16">
+            <mx:source>com/dacha/cemspi/view/assets/icons/png/16x16/search.png</mx:source>
+        </mx:Image>
+        <mx:TextInput width="110" toolTip="Search">
+        </mx:TextInput>
+        <mx:VRule height="30" width="2"/>
+        <mx:Image width="16" height="16" buttonMode="true" toolTip="Add" click="launchAddDialog()">
+            <mx:source>com/dacha/cemspi/view/assets/icons/png/16x16/add.png</mx:source>
+        </mx:Image>
+        <mx:Image width="16" height="16" buttonMode="true" toolTip="Refresh">
+            <mx:source>com/dacha/cemspi/view/assets/icons/png/16x16/refresh.png</mx:source>
+        </mx:Image>
+    </mx:ApplicationControlBar>
+     	
+     
+    <mx:VBox id="stackPanel" width="100%" height="100%">
+
+</mx:VBox>
+</mx:Panel>

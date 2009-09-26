@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="400" height="288" title="Add New Posting" backgroundAlpha="0.5">
+	
+	    <mx:Script>
+        <![CDATA[
+            import mx.managers.PopUpManager;
+
+            private function onClose():void {
+                PopUpManager.removePopUp(this);
+            }
+        ]]>
+    </mx:Script>
+
+	<mx:TextArea x="89" y="39" width="284" height="104" id="txtPost"/>
+	<mx:TextInput x="89" y="8" width="284" id="txtTitle"/>
+	<mx:ComboBox x="89" y="161" width="225" id="cmbLocation"></mx:ComboBox>
+	<mx:Label x="10" y="10" text="Title:"/>
+	<mx:Label x="10" y="40" text="Description:"/>
+	<mx:Label x="10" y="163" text="Location:"/>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="Submit"/>
+		<mx:Button label="Cancel" click="onClose()"/>
+	</mx:ControlBar>
+	
+</mx:TitleWindow>
