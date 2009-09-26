@@ -4,12 +4,8 @@
     xmlns:view="com.dacha.cemspi.view.*"
     xmlns:maps="com.dacha.cemspi.maps.*"
     width="100%" height="100%">
-
 	
 	<view:Bootstrap id="bootstrapView" currentState="LoggedIn" />
 	<maps:MainEventMap />
 	<maps:ModelMap />
-
-	
-
 </mx:Application>
